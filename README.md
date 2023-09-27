@@ -64,7 +64,11 @@ Assign roles for each member of the team by completing the table below.
 
 |Name|Role(s)|
 |--|--|
-|name|manager,developer,tester,documenter|
+|name|manager, developer,tester, documenter|
+|Joseph T|developer,...|
+|Bryan T|developer,...|
+|Kentaro M|developer,...|
+|Sayizana W|developer,...|
 
 # Modeling Phase
 
