@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block main %}
+        <form action="" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <!-- TODO #4: complete the form rendering with the missing fields-->
+            <p>{{ form.number.label }} <br> {{ form.number(size=40) }}</p>
+            <p>{{ form.title.label }} <br> {{ form.title(size=30) }}</p>
+            <p>{{ form.client_name.label }} <br> {{ form.client_name(size=30) }}</p>
+            <p>{{ form.phone_number.label }} <br> {{ form.phone_number(size=20) }}</p>
+            <p>{{ form.due_date.label }} <br> {{ form.due_date(size=10) }}</p>
+            <p>{{ form.submit() }}</p>
+        </form>
+{% endblock %}
