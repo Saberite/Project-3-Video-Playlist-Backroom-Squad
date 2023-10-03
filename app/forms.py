@@ -7,13 +7,13 @@ Description: Project 01 - Forms for Windoors Web App
 '''
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, DateField, SubmitField, validators, FormField, FieldList
+from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, EmailField
 from wtforms.validators import DataRequired
 
 class SignUpForm(FlaskForm):
     id = StringField('Id', validators=[DataRequired()]) 
     email = StringField('Email', validators=[DataRequired()])
-    creation_date = StringField('Creation Date', validators=[DataRequired()])
+    creation_date = DateField('Creation Date', validators=[DataRequired()])
     passwd = PasswordField('Password', validators=[DataRequired()])
     passwd_confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     submit = SubmitField('Confirm')

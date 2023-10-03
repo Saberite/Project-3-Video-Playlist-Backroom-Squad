@@ -34,17 +34,28 @@ def users_signin():
 def register_reseller():
     form = ResellerSignUpForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data, password=form.passwd.data)
-        db.session.add(user)
-        db.session.commit()
+        existing_user = Reseller.query.filter_by(id=form.id.data).first() 
+        if existing_user:
+            return '<p>User with that ID already exists!</p>' # This line's purpose is to return an error message if the user already exists
 
-        reseller = Reseller(user_id=user.id, company=form.company.data, address=form.address.data,
-                            phone=form.phone.data, website=form.website.data)
-        db.session.add(reseller)
-        db.session.commit()
-
-        return redirect(url_for('users_signin'))
+        passwd = form.passwd.data # This line's purpose is to append the password field to the SignUp form
+        passwd_confirm = form.passwd_confirm.data # This line's purpose is to append the password confirmation field to the SignUp form
+        
+        if passwd == passwd_confirm: # This line's purpose is to check if the password and password confirmation fields match
+            salt_passwd = bcrypt.gensalt() # This line's purpose is to generate a salt for the password
+            
+            hashed_passwd = bcrypt.hashpw(passwd.encode('utf-8'), salt_passwd) # This line's purpose is to hash the password
+            Reselleruser = Reseller(id=form.id.data, email = form.email.data, creation_date = form.creation_date.data, company = form.company.data, address =form.address.data, phone = form.phone.data, website = form.website.data, passwd = hashed_passwd) # This line's purpose is to create a new user
+            
+            db.session.add(Reselleruser) # This line's purpose is to add the new user to the database
+            db.session.commit() # This line's purpose is to commit the new user to the database
+        else:
+            return '<p>Passwords do not match!</p>' # This line's purpose is to return an error message if the passwords do not match
+        return redirect(url_for('users_signin')) # This line's purpose is to redirect the user to the sign in page
+    print(form.errors)
     return render_template('reseller_signup.html', form=form)
+
+    
 
 @app.route('/register_admin', methods=['GET', 'POST'])
 def register_admin():

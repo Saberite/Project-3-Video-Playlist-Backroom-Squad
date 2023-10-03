@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
 
 # This is the ResellerUser class for the program
 class Reseller(User):
-    __tablename__ = "reseller"
+    __tablename__ = "resellers"
     id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True) # user id
     company = db.Column(db.String()) # company name
     address = db.Column(db.String()) # company address
@@ -30,7 +30,7 @@ class Reseller(User):
 
 # This is the AdminUser class for the program
 class Admin(User):
-    __tablename__ = "admin"
+    __tablename__ = "admins"
     id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True) # user id
     name = db.Column(db.String()) # admin name
     title = db.Column(db.String()) # admin title
