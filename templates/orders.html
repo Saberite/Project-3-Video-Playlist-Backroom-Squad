@@ -1,0 +1,44 @@
+
+
+{% extends 'base.html' %}
+{% block main %}
+    <!-- TODO #1a: show the name of the user -->
+    <p>{{ current_user.id }}'s Orders</p> <!-- The purpose of this line is to show the user's name and the current list of orders -->
+    <table>
+        <tr>
+            <th>Order#</th>
+            <th>Creation Date</th>
+            <th>Items</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        <!-- TODO #1b: show the user's orders in the table -->
+        {% for order in orders %}
+            {% if loop.index % 2 == 0 %}
+                <tr class="even_row">
+            {% else %}
+                <tr class="odd_row">
+            {% endif %}
+                    <td>{{ order.number }}</td> <!-- The purpose of this line is to show the order number -->
+                    <td>{{ order.creation_date }}</td>  <!-- The purpose of this line is to show the order creation date -->
+                    <td>{{ order.items }}</td> <!-- The purpose of this line is to show the order's items-->
+                    <td>{{ order.status }}</td> <!-- The purpose of this line is to show the status of the order -->
+                    
+                </tr>
+        {% endfor %}
+    </table>
+    <p />
+    <button type="button" class="button" onclick="simple_action('{{ url_for('users_signout') }}')">Sign Out</button>&nbsp;&nbsp;<button type="button" class="button" onclick="simple_action('{{ url_for('orders_create') }}')">New Order</button>
+</div>
+<script type="text/javascript">
+    function simple_action(target) {
+        window.location = target;
+    }
+
+    function confirmed_action(target) {
+        if (confirm('Are you sure?')) {
+            window.location = target;
+        }
+    }
+</script>
+{% endblock %}

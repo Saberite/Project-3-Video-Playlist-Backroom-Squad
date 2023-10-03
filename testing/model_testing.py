@@ -96,12 +96,15 @@ if __name__ == "__main__":
         product2 = Product(code='PRD002', description='Product 002', type='Door', available=True, price=200.00)
 
         # create an Order
-        order = Order(number='ORD001', creation_date='2021-09-01', status='Pending')
-        order2 = Order(number='ORD002', creation_date='2021-09-02', status='Delivered')
+        # order = Order(number='ORD001', creation_date='2021-09-01', status='Pending')
+        # order2 = Order(number='ORD002', creation_date='2021-09-02', status='Delivered')
 
         # create an Item
         item = Item(orderNumber= 'ORD001', sequetialNumber=1, productCode='PRD001', quantity=1, specs='Specs')
         item2 = Item(orderNumber= 'ORD002', sequetialNumber=2, productCode='PRD002', quantity=2, specs='Specs')
+
+        order = Order(number='ORD001', creation_date='2021-09-01', status='Pending')
+        order2 = Order(number='ORD002', creation_date='2021-09-02', status='Delivered')
 
         # # add the User to the session
         # session.add(user)

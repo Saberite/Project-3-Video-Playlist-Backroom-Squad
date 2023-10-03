@@ -60,7 +60,7 @@ def register_reseller():
 def register_admin():
     form = AdminSignUpForm()
     if form.validate_on_submit():
-        existing_user = Reseller.query.filter_by(id=form.id.data).first() 
+        existing_user = Admin.query.filter_by(id=form.id.data).first() 
         if existing_user:
             return '<p>User with that ID already exists!</p>' # This line's purpose is to return an error message if the user already exists
 
@@ -71,12 +71,13 @@ def register_admin():
             salt_passwd = bcrypt.gensalt() # This line's purpose is to generate a salt for the password
             
             hashed_passwd = bcrypt.hashpw(passwd.encode('utf-8'), salt_passwd) # This line's purpose is to hash the password
-            Adminuser = Admin(id=form.id.data, email = form.email.data, creation_date = form.creation_date.data, company = form.company.data, address =form.address.data, phone = form.phone.data, website = form.website.data, passwd = hashed_passwd) # This line's purpose is to create a new user
+            Adminuser = Admin(id=form.id.data, name = form.name.data, title = form.title.data, email = form.email.data, creation_date = form.creation_date.data, passwd = hashed_passwd) # This line's purpose is to create a new user
             
             db.session.add(Adminuser) # This line's purpose is to add the new user to the database
             db.session.commit() # This line's purpose is to commit the new user to the database
         else:
             return '<p>Passwords do not match!</p>' # This line's purpose is to return an error message if the passwords do not match
+        return redirect(url_for('users_signin'))
     return render_template('admin_signup.html', form=form)
 
     
@@ -97,8 +98,8 @@ def users_signout():
 @app.route('/orders')
 @login_required
 def orders():
-    user_orders = Order.query.filter_by(user_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in user (current_user)
-    return render_template('orders.html', orders=user_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
+    # user_orders = Order.query.filter_by(user_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in user (current_user)
+    return render_template('orders.html') # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
 
 # TO-DO #2: get the list of invoices from the signed-in user (current_user); then, create a new invoice with the information gathered from the form and append it to the list of invoices; commit to persist the information into the database
 # @app.route('/invoices/create', methods=['GET','POST'])
@@ -116,28 +117,24 @@ def orders():
 @app.route('/orders/create', methods=['GET','POST']) # This line's purpose is to create a new route for the create order page
 @login_required
 def orders_create():
-    form = OrderForm() #Create a new OrderForm object
-    if form.validate_on_submit(): # Check if the form has been submitted
-        new_Order = Order(user_id = current_user.id, number=form.number.data, creation_date=form.creation_date.data, status=form.status.data) # This line's purpose is to create a new order with the information gathered from the form
-        db.session.add(new_Order) # This line's purpose is to add the new order to the database
-        db.session.commit() # This line's purpose is to commit the new order to the database
-        return redirect(url_for('orders')) # This line's purpose is to redirect the user to the list of orders page
-    else:
-         return render_template('orders_create.html', form=form) # This line's purpose is to render the create order page
-    
-@app.route('/orders/<id>/update', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
-@login_required
-def orders_update(id):
-    order = Order.query.filter_by(id=id).first()
-    form = OrderForm(obj=order)
-    if form.validate_on_submit():
-        if current_user == Admin:
-            order.number = form.number.data
-            order.creation_date = form.creation_date.data
-            order.status = form.status.data
-            db.session.commit()
-        return redirect(url_for('orders'))
-    else:
-        return render_template('orders_update.html', form=form)
+    ## Implement the code to create a new order here!
+
+
+### THIS IS OPTIONAL, DON'T COMPLETE BEFORE OTHER ROUTES ARE DONE ###  
+  
+# @app.route('/orders/<id>/update', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
+# @login_required
+# def orders_update(id):
+#     order = Order.query.filter_by(id=id).first()
+#     form = OrderForm(obj=order)
+#     if form.validate_on_submit():
+#         if current_user == Admin:
+#             order.number = form.number.data
+#             order.creation_date = form.creation_date.data
+#             order.status = form.status.data
+#             db.session.commit()
+#         return redirect(url_for('orders'))
+#     else:
+#         return render_template('orders_update.html', form=form)
 
     
