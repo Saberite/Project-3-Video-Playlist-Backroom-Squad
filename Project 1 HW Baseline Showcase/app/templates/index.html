@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block main %}
+        <table>
+            <tr>
+            <!-- Replaced text was formerly Id, Title, Client Name, Phone Number, and Due Date-->
+                <th>Product(Code, Description, Type(Door/Window), Available(T/F), Price)</th>
+                <th>Order(Number, Creation Date, Status)</th>
+                <th>Item(Order #, Sequetial #, Product Code, Quantiy, Specs)</th>
+                <th>Extra? Company maybe?</th>
+                <th>Extra?</th>
+            </tr>
+            {% for invoice in invoices %}
+                   {% if loop.index % 2 == 0 %}
+                        <tr class="even_row">
+                    {% else %}
+                        <tr class="odd_row">
+                    {% endif %}
+                    <td>{{ invoice.number }}</td>
+                    <td>{{ invoice.title }}</td>
+                    <td>{{ invoice.client_name }}</td>
+                    <td>{{ invoice.phone_number }}</td>
+                    <td>{{ invoice.due_date }}</td>
+                </tr>
+                {% endfor %}
+        </table>
+        <br />
+        <button type="button" class="create_button" onclick=simple_action("{{ url_for('create_invoice') }}")>Create</button>
+        <script type="text/javascript">
+            function simple_action(target) {
+                window.location = target
+            }
+
+            function confirmed_action(target) {
+                if (confirm('Are you sure?')) {
+                    window.location = target
+                }
+            }
+        </script>
+{% endblock %}

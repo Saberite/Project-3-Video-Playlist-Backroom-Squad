@@ -1,0 +1,42 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: medium;
+}
+
+h1 {
+  color: navy;
+  margin-left: 20px;
+}
+
+table, th, td {
+  border: 1px solid;
+  padding: 5px
+}
+
+th {
+  background-color: darkblue;
+  color: white
+}
+
+.odd_row {
+  background-color: white;
+}
+
+.even_row {
+  background-color: lightgray;
+}
+
+.update_button {
+  background-color: green;
+  color: white;
+}
+
+.delete_button {
+  background-color: red;
+  color: white;
+}
+
+.create_button {
+  background-color: black;
+  color: white;
+}
