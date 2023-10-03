@@ -14,7 +14,7 @@ from flask_login import UserMixin
 class User(db.Model, UserMixin):
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True) # user id
+    id = db.Column(db.String, primary_key=True) # user id
     email = db.Column(db.String, unique=True, nullable=False) # email address
     passwd = db.Column(db.String) # password 
     creation_date = db.Column(db.String) # date of creation
@@ -22,7 +22,7 @@ class User(db.Model, UserMixin):
 # This is the ResellerUser class for the program
 class Reseller(User):
     __tablename__ = "resellers"
-    id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True) # user id
+    id = db.Column(db.String, db.ForeignKey("users.id"), primary_key=True) # user id
     company = db.Column(db.String()) # company name
     address = db.Column(db.String()) # company address
     phone = db.Column(db.String()) # company phone number
@@ -31,7 +31,7 @@ class Reseller(User):
 # This is the AdminUser class for the program
 class Admin(User):
     __tablename__ = "admins"
-    id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True) # user id
+    id = db.Column(db.String, db.ForeignKey("users.id"), primary_key=True) # user id
     name = db.Column(db.String()) # admin name
     title = db.Column(db.String()) # admin title
 
@@ -59,7 +59,7 @@ class Order(db.Model):
 class Item(db.Model):
     __tablename__ = "items"
 
-    id = db.Column(db.Integer, primary_key=True) # item id
+    id = db.Column(db.String, primary_key=True) # item id
     order_number = db.Column(db.String, db.ForeignKey("orders.number")) # order number
     product_code = db.Column(db.String, db.ForeignKey("products.code")) # product code
     quantity = db.Column(db.Integer) # item quantity

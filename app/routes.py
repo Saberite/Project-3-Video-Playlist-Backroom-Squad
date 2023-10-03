@@ -27,7 +27,7 @@ def users_signin():
         user = User.query.filter_by(id=form.id.data).first() # This line's purpose is to check if the user exists
         if user and bcrypt.checkpw(form.passwd.data.encode('utf-8'), user.passwd): # This line's purpose is to check if the password is correct
             login_user(user) # This line's purpose is to sign in the user
-            return redirect(url_for('invoices')) # This line's purpose is to redirect the user to the list of users page
+            return redirect(url_for('orders')) # This line's purpose is to redirect the user to the list of users page
     return render_template('users_signin.html', form = form) # This line's purpose is to render the sign in page
 
 @app.route('/register_reseller', methods=['GET', 'POST'])
@@ -52,24 +52,31 @@ def register_reseller():
         else:
             return '<p>Passwords do not match!</p>' # This line's purpose is to return an error message if the passwords do not match
         return redirect(url_for('users_signin')) # This line's purpose is to redirect the user to the sign in page
-    print(form.errors)
     return render_template('reseller_signup.html', form=form)
 
     
-
+# Finish this admin sign up route eventually!!!
 @app.route('/register_admin', methods=['GET', 'POST'])
 def register_admin():
     form = AdminSignUpForm()
     if form.validate_on_submit():
-        user = User(id = form.id.data, email=form.email.data, password=form.passwd.data)
-        db.session.add(user)
-        db.session.commit()
+        existing_user = Reseller.query.filter_by(id=form.id.data).first() 
+        if existing_user:
+            return '<p>User with that ID already exists!</p>' # This line's purpose is to return an error message if the user already exists
 
-        admin = Admin(userid = user.id, name = form.name.data, title=form.title.data)
-        db.session.add(admin)
-        db.session.commit()
-
-        return redirect(url_for('users_signin'))
+        passwd = form.passwd.data # This line's purpose is to append the password field to the SignUp form
+        passwd_confirm = form.passwd_confirm.data # This line's purpose is to append the password confirmation field to the SignUp form
+        
+        if passwd == passwd_confirm: # This line's purpose is to check if the password and password confirmation fields match
+            salt_passwd = bcrypt.gensalt() # This line's purpose is to generate a salt for the password
+            
+            hashed_passwd = bcrypt.hashpw(passwd.encode('utf-8'), salt_passwd) # This line's purpose is to hash the password
+            Adminuser = Admin(id=form.id.data, email = form.email.data, creation_date = form.creation_date.data, company = form.company.data, address =form.address.data, phone = form.phone.data, website = form.website.data, passwd = hashed_passwd) # This line's purpose is to create a new user
+            
+            db.session.add(Adminuser) # This line's purpose is to add the new user to the database
+            db.session.commit() # This line's purpose is to commit the new user to the database
+        else:
+            return '<p>Passwords do not match!</p>' # This line's purpose is to return an error message if the passwords do not match
     return render_template('admin_signup.html', form=form)
 
     
