@@ -18,7 +18,7 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True) # user id
+    id = Column(String, primary_key=True) # user id
     email = Column(String, unique=True, nullable=False) # email address
     passwd = Column(String) # password 
     creationDate = Column(String) # date of creation
@@ -26,16 +26,17 @@ class User(Base):
 # This is the ResellerUser class for the program
 class Reseller(User):
     __tablename__ = "reseller"
-    id = Column(Integer, ForeignKey("users.id"), primary_key=True) # user id
+    id = Column(String, ForeignKey("users.id"), primary_key=True) # user id
     company = Column(String()) # company name
     address = Column(String()) # company address
     phone = Column(String()) # company phone number
     website = Column(String()) # company website
+    orders = relationship("Order", cascade="delete") # reselluser orders
 
 # This is the AdminUser class for the program
 class Admin(User):
     __tablename__ = "admin"
-    id = Column(Integer, ForeignKey("users.id"), primary_key=True) # user id
+    id = Column(String, ForeignKey("users.id"), primary_key=True) # user id
     name = Column(String()) # admin name
     title = Column(String()) # admin title
 
@@ -57,7 +58,10 @@ class Order(Base):
     status = Column(String()) # order status
 
     # Establish a one-to-many relationship between Order and Items
-    items = relationship("Item", back_populates="order") # order items
+    items = relationship("Item", cascade="delete") # order items
+
+    # Establish a many-to-one relationship between Order and Users
+    reseller_id = Column(String, ForeignKey("reseller.id"), primary_key = True) # user id
 
 # This is the Item class for the program
 class Item(Base):
@@ -83,13 +87,15 @@ if __name__ == "__main__":
     with session:
 
         # create a User
-        user = User(id = 1, email = 'JMurray@gmail.com', passwd = '123', creationDate = '2021-09-01')
+        user = User(id = 'jtewolde', email = 'JMurray@gmail.com', passwd = '123', creationDate = '2021-09-01')
 
         # create a Reseller user
-        reseller = Reseller(id = 2, email= 'backroomgang@gmail.com', passwd= '3829', creationDate= '2021-12-21', company='Backroom Gang', address='1234 Main St', phone='123-456-7890', website='www.backroomgang.com')
+        reseller = Reseller(id = 'tmota', email= 'backroomgang@gmail.com', passwd= '3829', creationDate= '2021-12-21', company='Backroom Gang', address='1234 Main St', phone='123-456-7890', website='www.backroomgang.com')
+        reseller2 = Reseller(id = 'Bsolz', email = 'LKIAB@yahoo.com', passwd = '123', creationDate = '2021-09-02', company = 'LKIAB', address = '1234 Main St', phone = '123-456-7890', website = 'www.LKIAB.com')
+
 
         # create an Admin user
-        admin = Admin(id = 22, email = 'jtewold@aol.com', passwd = 'denver', creationDate = '2021-09-03',name='Joseph Tewolde', title='Developer')
+        admin = Admin(id = 'Bryan', email = 'jtewold@aol.com', passwd = 'denver', creationDate = '2021-09-03',name='Joseph Tewolde', title='Developer')
 
         # create a Product
         product = Product(code='PRD001', description='Product 001', type='Window', available=True, price=100.00)
@@ -102,25 +108,35 @@ if __name__ == "__main__":
         # create an Item
         item = Item(orderNumber= 'ORD001', sequetialNumber=1, productCode='PRD001', quantity=1, specs='Specs')
         item2 = Item(orderNumber= 'ORD002', sequetialNumber=2, productCode='PRD002', quantity=2, specs='Specs')
+        item3 = Item(orderNumber= 'ORD003', sequetialNumber=3, productCode='PRD003', quantity=3, specs='Specs')
+        item4 = Item(orderNumber= 'ORD004', sequetialNumber=4, productCode='PRD004', quantity=4, specs='Specs')
 
-        order = Order(number='ORD001', creation_date='2021-09-01', status='Pending')
-        order2 = Order(number='ORD002', creation_date='2021-09-02', status='Delivered')
+        order = Order(number='ORD001', creation_date='2021-09-01', status='Pending', reseller_id = reseller.id)
+        order2 = Order(number='ORD002', creation_date='2021-09-02', status='Delivered', reseller_id = reseller.id)
 
-        # # add the User to the session
-        # session.add(user)
-        # # add the Reseller user to the session
-        # session.add(reseller)
-        # # add the Admin user to the session
-        # session.add(admin)
-        # # add the Product to the session
-        # session.add(product)
-        # session.add(product2)
-        # # add the Order to the session
-        # session.add(order)
-        # session.add(order2)
-        # # add the Item to the session
-        # session.add(item)
-        # session.add(item2)
+        order3 = Order(number='ORD002', creation_date='2021-09-03', status='Pending', reseller_id = reseller2.id)
+        order4 = Order(number='ORD004', creation_date='2021-09-04', status='Delivered', reseller_id = reseller2.id)
+
+        # add the User to the session
+        session.add(user)
+        # add the Reseller user to the session
+        session.add(reseller)
+        session.add(reseller2)
+        # add the Admin user to the session
+        session.add(admin)
+        # add the Product to the session
+        session.add(product)
+        session.add(product2)
+        # add the Order to the session
+        session.add(order)
+        session.add(order2)
+        session.add(order3)
+        session.add(order4)
+        # add the Item to the session
+        session.add(item)
+        session.add(item2)
+        session.add(item3)
+        session.add(item4)
 
         # commit the session
         session.commit()
@@ -167,6 +183,7 @@ if __name__ == "__main__":
 
         print("\n")
 
+    ######################################################### TESTING RELATIONSHIPS #########################################################
         # Query all items with their order
         all_items = session.query(Item).join(Order).all()
         for item in all_items:
@@ -174,3 +191,18 @@ if __name__ == "__main__":
 
         print("\n")
 
+        # Query all orders for a reseller user
+        all_orders = session.query(Order).join(Reseller).all()
+        for order in all_orders:
+            Treseller = session.query(Reseller).filter(Reseller.id == order.reseller_id).first()
+            print(
+                f"Number: {order.number}, Creation Date: {order.creation_date}, "
+                f"Status: {order.status}, Reseller ID: {order.reseller_id}, "
+                f"User ID: {Treseller.id}, Email: {Treseller.email}, "
+                f"Password: {Treseller.passwd}, Creation Date: {Treseller.creationDate}"
+            )
+        print("\n")
+
+        # Test the 
+
+        

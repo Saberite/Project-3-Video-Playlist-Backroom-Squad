@@ -7,7 +7,7 @@ Description: Project 01 - Forms for Windoors Web App
 '''
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, EmailField
+from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, IntegerField
 from wtforms.validators import DataRequired
 
 class SignUpForm(FlaskForm):
@@ -36,7 +36,7 @@ class SignInForm(FlaskForm):
 
 class ItemForm(FlaskForm):
     product_code = StringField('Product Code', validators=[DataRequired()])
-    quantity = StringField('Quantity', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
     specs = StringField('Specs', validators=[DataRequired()])
     
 class OrderForm(FlaskForm):
@@ -45,3 +45,6 @@ class OrderForm(FlaskForm):
     status = StringField('Status', validators=[DataRequired()])
     items = FieldList(FormField(ItemForm), min_entries=1)
     submit = SubmitField('Confirm')
+
+class ProductForm(FlaskForm):
+    products = FieldList(FormField(ItemForm), min_entries=3)

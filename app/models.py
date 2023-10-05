@@ -27,6 +27,7 @@ class Reseller(User):
     address = db.Column(db.String()) # company address
     phone = db.Column(db.String()) # company phone number
     website = db.Column(db.String()) # company website
+    orders = db.relationship("Order") # reselluser orders
 
 # This is the AdminUser class for the program
 class Admin(User):
@@ -53,7 +54,10 @@ class Order(db.Model):
     status = db.Column(db.String()) # order status
 
     # Establish a one-to-many relationship between Order and Items
-    items = db.relationship("Item", back_populates="order") # order items
+    items = db.relationship("Item", cascade="delete") # order items
+
+    # Establish a many-to-one relationship between Order and Users
+    reseller_id = db.Column(db.String, db.ForeignKey("resellers.id"), primary_key = True) # user id
 
 # This is the Item class for the program
 class Item(db.Model):
@@ -63,9 +67,7 @@ class Item(db.Model):
     order_number = db.Column(db.String, db.ForeignKey("orders.number")) # order number
     product_code = db.Column(db.String, db.ForeignKey("products.code")) # product code
     quantity = db.Column(db.Integer) # item quantity
-
-    # Establish a many-to-one relationship between Items and Orders
-    order = db.relationship("Order", back_populates="items") # order items
+    specs = db.Column(db.String) # item specifications
 
     # Establish a one-to-one relationship between Items and Products
     product = db.relationship("Product") # item product

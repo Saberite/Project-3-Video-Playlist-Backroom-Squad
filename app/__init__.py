@@ -11,6 +11,7 @@ import os
 app = Flask("Authentication Web App")
 app.secret_key = os.environ['SECRET_KEY']
 
+
 # db initialization
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()

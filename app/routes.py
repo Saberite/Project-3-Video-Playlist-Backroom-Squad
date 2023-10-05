@@ -1,14 +1,13 @@
 '''
 CS3250 - Software Development Methods and Tools - Fall 2023
 Instructor: Thyago Mota
-Student: Joseph Tewolde
 Group Name: Backroom Gang
 Description: Project01 - Routes for the SQLAlchemy Windoors Web App
 '''
 
 from app import app, db, load_user
 from app.models import User, Reseller, Admin, Product, Order, Item
-from app.forms import SignUpForm, SignInForm, OrderForm, ItemForm, ResellerSignUpForm, AdminSignUpForm
+from app.forms import SignInForm, OrderForm, ItemForm, ResellerSignUpForm, AdminSignUpForm, ProductForm
 from flask import render_template, redirect, url_for, request
 from flask_login import login_required, login_user, logout_user, current_user
 import bcrypt
@@ -19,6 +18,8 @@ import bcrypt
 def index(): 
     return render_template('index.html')
 
+
+# Done
 @app.route('/users/signin', methods=['GET', 'POST'])
 def users_signin():
     #This purpose of this function is to sign in the user by checking if the user exists and if the password is correct 
@@ -30,6 +31,7 @@ def users_signin():
             return redirect(url_for('orders')) # This line's purpose is to redirect the user to the list of users page
     return render_template('users_signin.html', form = form) # This line's purpose is to render the sign in page
 
+# Done
 @app.route('/register_reseller', methods=['GET', 'POST'])
 def register_reseller():
     form = ResellerSignUpForm()
@@ -55,7 +57,7 @@ def register_reseller():
     return render_template('reseller_signup.html', form=form)
 
     
-# Finish this admin sign up route eventually!!!
+# Done
 @app.route('/register_admin', methods=['GET', 'POST'])
 def register_admin():
     form = AdminSignUpForm()
@@ -87,54 +89,56 @@ def users_signout():
     logout_user() # this function is used to sign out the user
     return redirect(url_for('index')) # this function is used to redirect the user to the index page
 
-# @app.route('/invoices')
-# @login_required
-# def invoices():
-#     user_invoices = Invoice.query.filter_by(user_id=current_user.id).all() # This line's purpose is to get the list of invoices from the signed-in user (current_user)
-#     return render_template('invoices.html', invoices=user_invoices) # This line's purpose is to render the invoices page with the list of invoices from the signed-in user (current_user)
-
-#     #return render_template("invoices.html", user=current_user)
 
 @app.route('/orders')
 @login_required
-def orders():
-    # user_orders = Order.query.filter_by(user_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in user (current_user)
-    return render_template('orders.html') # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
+def orders(): # Work in progress
+    ## FIND A WAY TO FILTER ORDERS BY USER ID FOR THE RESELLER USER - DONE
+    ## FOR THE ADMIN USER, SHOW ALL ORDERS FOR ALL USERS
 
-# TO-DO #2: get the list of invoices from the signed-in user (current_user); then, create a new invoice with the information gathered from the form and append it to the list of invoices; commit to persist the information into the database
-# @app.route('/invoices/create', methods=['GET','POST'])
-# @login_required
-# def invoices_create():
-#     form = InvoiceForm() #Create a new InvoiceForm object
-#     if form.validate_on_submit(): # Check if the form has been submitted
-#         new_Invoice = Invoice(user_id = current_user.id, number=form.number.data, title=form.title.data, client_name= form.client_name.data, phone_number= form.phone_number.data, due_date=form.due_date.data) # This line's purpose is to create a new invoice with the information gathered from the form
-#         db.session.add(new_Invoice) # This line's purpose is to add the new invoice to the database
-#         db.session.commit() # This line's purpose is to commit the new invoice to the database
-#         return redirect(url_for('invoices')) # This line's purpose is to redirect the user to the list of invoices page
-#     else:
-#        return render_template('invoices_create.html', form=form) # This line's purpose is to render the create invoice page
+    reselleruser_orders = Order.query.filter_by(reseller_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in reselleruser (current_user)
+    return render_template('orders.html', orders = reselleruser_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
     
+#### WORK IN PROGRESS #### 
+### OPEN FOR CHANGE ###   
 @app.route('/orders/create', methods=['GET','POST']) # This line's purpose is to create a new route for the create order page
 @login_required
 def orders_create():
-    ## Implement the code to create a new order here!
+    form = ProductForm() # This line's purpose is to create a new OrderForm object
 
+    # This line's purpose is to add the products to the form
+    product_codes = [(product.code, product.code) for product in Product.query.all()]
 
+    if form.validate_on_submit():
+        new_Order = Order(number=form.number.data, creation_date=form.creation_date.data, status=form.status.data) # This line's purpose is to create a new order
+
+        for item in form.items: # This line's purpose is to iterate through the items in the form
+            new_Item = Item(product_code = item.product_code.data, quantity = item.quantity.data, specs = item.specs.data) # This line's purpose is to create a new item
+            new_Order.items.append(new_Item) # This line's purpose is to append the new item to the new order
+        
+        db.session.add(new_Order) # This line's purpose is to add the new order to the database
+        db.session.commit() # This line's purpose is to commit the new order to the database
+
+        return redirect(url_for('orders')) # This line's purpose is to redirect the user to the list of orders page
+    else:
+        return render_template('orders_create.html', form=form) # This line's purpose is to render the create order page
+    
+    
 ### THIS IS OPTIONAL, DON'T COMPLETE BEFORE OTHER ROUTES ARE DONE ###  
   
-# @app.route('/orders/<id>/update', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
+# @app.route('/catalog/<id>/update', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
 # @login_required
-# def orders_update(id):
-#     order = Order.query.filter_by(id=id).first()
-#     form = OrderForm(obj=order)
-#     if form.validate_on_submit():
-#         if current_user == Admin:
-#             order.number = form.number.data
-#             order.creation_date = form.creation_date.data
-#             order.status = form.status.data
-#             db.session.commit()
-#         return redirect(url_for('orders'))
-#     else:
+# def catalog_update(id):
 #         return render_template('orders_update.html', form=form)
 
+
+#### WORK IN PROGRESS ####
+@app.route('/orders/update_status/<string:order_number>', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
+@login_required
+def orders_update_status(order_number):
+    # This function is used to update the status of an order 
+    # ONLY ADMINS CAN UPDATE THE STATUS OF AN ORDER
+    # if the current user is not an admin, redirect to the orders page
+
+    pass
     
