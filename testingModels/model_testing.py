@@ -58,7 +58,7 @@ class Order(Base):
     status = Column(String()) # order status
 
     # Establish a one-to-many relationship between Order and Items
-    items = relationship("Item", cascade="delete") # order items
+    items = relationship("Item", cascade="delete", back_populates="order", overlaps="order") # order items
 
     # Establish a many-to-one relationship between Order and Users
     reseller_id = Column(String, ForeignKey("reseller.id"), primary_key = True) # user id
@@ -184,13 +184,14 @@ if __name__ == "__main__":
         print("\n")
 
     ######################################################### TESTING RELATIONSHIPS #########################################################
-        # Query all items with their order
+        # Query all items with their order information
         all_items = session.query(Item).join(Order).all()
         for item in all_items:
-            print(f"Order Number: {item.orderNumber}, Sequential Number: {item.sequetialNumber}, Product Code: {item.productCode}, Quantity: {item.quantity}, Specs: {item.specs}, Order Number: {item.order.number}, Creation Date: {item.order.creation_date}, Status: {item.order.status}")
+            print(f"Item ID: {item.sequetialNumber}, Product Code: {item.productCode}, Quantity: {item.quantity}, Specs: {item.specs}")
+            order = item.order
+            print(f"Order Number: {order.number}, Creation Date: {order.creation_date}, Status: {order.status}")
 
         print("\n")
-
         # Query all orders for a reseller user
         all_orders = session.query(Order).join(Reseller).all()
         for order in all_orders:
@@ -203,6 +204,58 @@ if __name__ == "__main__":
             )
         print("\n")
 
-        # Test the 
+        # Attempt to delete order 'ORD001' and see if associated items are deleted
+        print("Attempt to delete order 'ORD001'")
+        try:
+            order_to_delete = session.query(Order).filter(Order.number == 'ORD001').first()
+            if order_to_delete:
+                session.delete(order_to_delete)
+                session.commit()
+                print("\tSuccess! Order 'ORD001' and its associated items are deleted.")
+            else:
+                print("\tOrder 'ORD001' not found.")
+        except Exception as e:
+            print(f"\tCouldn't delete order 'ORD001': {str(e)}")
+
+        # Attempt to retrieve items that were related to order 'ORD001'
+        print("Attempt to retrieve items that were related to order 'ORD001'")
+        try:
+            items = session.query(Item).filter(Item.orderNumber == 'ORD001').all()
+            if not items:
+                print("\tNo items found for order 'ORD001'. This is expected.")
+            else:
+                for item in items:
+                    print(f"\tItem ID: {item.sequetialNumber}, Product Code: {item.productCode}, Quantity: {item.quantity}, Specs: {item.specs}")
+        except Exception as e:
+            print(f"\tCouldn't retrieve items that were related to order 'ORD001': {str(e)}")
+
+        print("\n")
+
+        # Attempt to delete reseller user 'tmota' and see if associated orders are deleted
+        print("Attempt to delete reseller user 'tmota'")
+        try:
+            reseller_to_delete = session.query(Reseller).filter(Reseller.id == 'tmota').first()
+            if reseller_to_delete:
+                session.delete(reseller_to_delete)
+                session.commit()
+                print("\tSuccess! Reseller user 'tmota' and its associated orders are deleted.")
+            else:
+                print("\tReseller user 'tmota' not found.")
+        except Exception as e:
+            print(f"\tCouldn't delete reseller user 'tmota': {str(e)}")
+
+        # Attempt to retrieve orders that were related to reseller user 'tmota'
+        print("Attempt to retrieve orders that were related to reseller user 'tmota'")
+        try:
+            orders = session.query(Order).filter(Order.reseller_id == 'tmota').all()
+            if not orders:
+                print("\tNo orders found for reseller user 'tmota'. This is expected.")
+            else:
+                for order in orders:
+                    print(f"\tNumber: {order.number}, Creation Date: {order.creation_date}, Status: {order.status}")
+        except Exception as e:
+            print(f"\tCouldn't retrieve orders that were related to reseller user 'tmota': {str(e)}")
+
+                
 
         

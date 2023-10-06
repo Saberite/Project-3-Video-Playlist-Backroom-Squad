@@ -6,10 +6,9 @@ Description: Project 01 - Windoors
 '''
 
 from flask import Flask
-import os
 
 app = Flask("Authentication Web App")
-app.secret_key = os.environ['SECRET_KEY']
+app.config['SECRET_KEY']  = 'you-will-never-guess'
 
 
 # db initialization

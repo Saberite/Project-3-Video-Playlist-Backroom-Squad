@@ -18,7 +18,7 @@ import bcrypt
 def index(): 
     return render_template('index.html')
 
-
+############################################# USER AUTHENTICATION #############################################
 # Done
 @app.route('/users/signin', methods=['GET', 'POST'])
 def users_signin():
@@ -82,28 +82,42 @@ def register_admin():
         return redirect(url_for('users_signin'))
     return render_template('admin_signup.html', form=form)
 
-    
-# sign-out functionality from previous homework
+# Done
 @app.route('/users/signout', methods=['GET', 'POST'])
 def users_signout():
     logout_user() # this function is used to sign out the user
     return redirect(url_for('index')) # this function is used to redirect the user to the index page
 
+############################################# USER AUTHENTICATION #############################################
 
 @app.route('/orders')
 @login_required
 def orders(): # Work in progress
     ## FIND A WAY TO FILTER ORDERS BY USER ID FOR THE RESELLER USER - DONE
     ## FOR THE ADMIN USER, SHOW ALL ORDERS FOR ALL USERS
+    # Resellers must be able to track their own orders
+    # Admin users must be able to track all orders
 
+    # if current_user == Admin(): # This line's purpose is to check if the current user is an admin
+    #     all_orders = Order.query.all() # This line's purpose is to get the list of all orders
+    #     return render_template('orders.html', orders = all_orders) # This line's purpose is to render the orders page with the list of all orders
+    # elif current_user == Reseller(): # This line's purpose is to check if the current user is a reseller
+    #     reselleruser_orders = Order.query.filter_by(reseller_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in reselleruser (current_user)
+    #     return render_template('orders.html', orders = reselleruser_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
+    # else:
+    #     return redirect(url_for('index'))
     reselleruser_orders = Order.query.filter_by(reseller_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in reselleruser (current_user)
     return render_template('orders.html', orders = reselleruser_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
-    
+
+
 #### WORK IN PROGRESS #### 
 ### OPEN FOR CHANGE ###   
 @app.route('/orders/create', methods=['GET','POST']) # This line's purpose is to create a new route for the create order page
 @login_required
-def orders_create():
+# Feature: Resellers must be able to place new orders through the platform.
+# RESELLERS CAN ONLY CREATE ORDERS FOR THEMSELVES
+# if the current user is not a reseller, redirect to the orders page
+def orders_create(): 
     form = ProductForm() # This line's purpose is to create a new OrderForm object
 
     # This line's purpose is to add the products to the form
@@ -122,7 +136,18 @@ def orders_create():
         return redirect(url_for('orders')) # This line's purpose is to redirect the user to the list of orders page
     else:
         return render_template('orders_create.html', form=form) # This line's purpose is to render the create order page
-    
+
+#### WORK IN PROGRESS ####
+@app.route('/orders/update_status/<string:order_number>', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
+@login_required
+def orders_update_status(order_number):
+    # Admin users must be able to change the status of any order.
+    # This function is used to change the status of an order 
+    # ONLY ADMINS CAN UPDATE THE STATUS OF AN ORDER
+    # if the current user is not an admin, redirect to the orders page
+
+    pass
+
     
 ### THIS IS OPTIONAL, DON'T COMPLETE BEFORE OTHER ROUTES ARE DONE ###  
   
@@ -130,15 +155,4 @@ def orders_create():
 # @login_required
 # def catalog_update(id):
 #         return render_template('orders_update.html', form=form)
-
-
-#### WORK IN PROGRESS ####
-@app.route('/orders/update_status/<string:order_number>', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
-@login_required
-def orders_update_status(order_number):
-    # This function is used to update the status of an order 
-    # ONLY ADMINS CAN UPDATE THE STATUS OF AN ORDER
-    # if the current user is not an admin, redirect to the orders page
-
-    pass
     
