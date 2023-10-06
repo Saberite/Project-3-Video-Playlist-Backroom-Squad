@@ -90,9 +90,10 @@ def users_signout():
 
 ############################################# USER AUTHENTICATION #############################################
 
+
 @app.route('/orders')
 @login_required
-def orders(): # Work in progress
+def orders(): # Done
     ## FIND A WAY TO FILTER ORDERS BY USER ID FOR THE RESELLER USER - DONE
     ## FOR THE ADMIN USER, SHOW ALL ORDERS FOR ALL USERS
     
