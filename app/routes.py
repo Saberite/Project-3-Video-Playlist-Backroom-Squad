@@ -90,7 +90,6 @@ def users_signout():
 
 ############################################# USER AUTHENTICATION #############################################
 
-
 @app.route('/orders')
 @login_required
 def orders(): # Done
