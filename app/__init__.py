@@ -11,6 +11,13 @@ app = Flask("Authentication Web App")
 app.config['SECRET_KEY']  = 'you-will-never-guess'
 
 
+app.config['INITIAL_PRODUCTS'] = [
+    {'product_code': 'door-001', 'quantity': 0, 'specs': ''},  # This is the initial product list
+    {'product_code': 'door-002', 'quantity': 0, 'specs': ''}, 
+    {'product_code': 'window-001', 'quantity': 0, 'specs': ''},
+]
+
+
 # db initialization
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()

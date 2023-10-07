@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block main %}
+<form method="POST" action="{{ url_for('orders_create') }}">
+    {{ form.hidden_tag() }}
     <!-- TODO #1a: show the name of the user -->
     <p>Select the Items for the Order</p> <!-- The purpose of this line is to show the user's name and the current list of orders -->
     <table>
@@ -15,9 +17,9 @@
             {% else %}
                 <tr class="odd_row">
             {% endif %}
-                    <td>{{ products.product_code.label }}</td>
-                    <td>{{ products.specs }}</td>
-                    <td>{{ products.quantity }}</td>
+                    <td>{{ products.product_code }}</td>
+                    <td>{{ products.specs}}</td>
+                    <td>{{ products.quantity}}</td>
                 </tr>
         {% endfor %}
     </table>

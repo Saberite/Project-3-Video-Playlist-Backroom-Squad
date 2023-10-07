@@ -6,7 +6,7 @@ Group Name: Backroom Gang
 Description: Project 01 - Forms for Windoors Web App
 '''
 
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, Form
 from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, IntegerField
 from wtforms.validators import DataRequired
 
@@ -34,10 +34,10 @@ class SignInForm(FlaskForm):
     passwd = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Confirm')
 
-class ItemForm(FlaskForm):
+class ItemForm(Form):
     product_code = StringField('Product Code', validators=[DataRequired()])
-    quantity = IntegerField('Quantity', validators=[DataRequired()])
-    specs = StringField('Specs', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', default=0)
+    specs = StringField('Specs', default='')
     
 class OrderForm(FlaskForm):
     number = StringField('Order#', validators=[DataRequired()])
@@ -46,5 +46,9 @@ class OrderForm(FlaskForm):
     items = FieldList(FormField(ItemForm), min_entries=1)
     submit = SubmitField('Confirm')
 
-class ProductForm(FlaskForm):
-    products = FieldList(FormField(ItemForm), min_entries=3)
+class OrderCreateForm(FlaskForm):
+    number = StringField('Order Number')  
+    creation_date = DateField('Creation Date')  
+    status = StringField('Status')
+    products = FieldList(FormField(ItemForm)) 
+    submit = SubmitField('Confirm')

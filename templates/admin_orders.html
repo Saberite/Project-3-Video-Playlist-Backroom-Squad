@@ -1,7 +1,7 @@
 
 {% extends 'base.html' %}
 {% block main %}
-    <p>{{ current_user.id }}'s Orders</p> <!-- The purpose of this line is to show the user's name and the current list of orders -->
+    <p>{{ current_user.id }}'s List of Resellers' Orders</p> <!-- The purpose of this line is to show the user's name and the current list of orders -->
     <table>
         <tr>
             <th>Order#</th>
@@ -25,7 +25,7 @@
         {% endfor %}
     </table>
     <p />
-    <button type="button" class="button" onclick="simple_action('{{ url_for('users_signout') }}')">Sign Out</button>&nbsp;&nbsp;<button type="button" class="button" onclick="simple_action('{{ url_for('orders_create') }}')">New Order</button>
+    <button type="button" class="button" onclick="simple_action('{{ url_for('users_signout') }}')">Sign Out</button>
 </div>
 <script type="text/javascript">
     function simple_action(target) {

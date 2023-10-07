@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String, unique=True, nullable=False) # email address
     passwd = db.Column(db.String) # password 
     creation_date = db.Column(db.String) # date of creation
+    role = db.Column(db.String) # user role
 
 # This is the ResellerUser class for the program
 class Reseller(User):
