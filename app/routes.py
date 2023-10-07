@@ -96,6 +96,7 @@ def users_signout():
 def orders(): # COMPLETE
     ## FIND A WAY TO FILTER ORDERS BY USER ID FOR THE RESELLER USER - DONE
     ## FOR THE ADMIN USER, SHOW ALL ORDERS FOR ALL USERS
+    
     # Resellers must be able to track their own orders
     # Admin users must be able to track all orders
     if current_user.role == "admin" : # This line's purpose is to check if the current user is an admin
@@ -105,9 +106,18 @@ def orders(): # COMPLETE
         reselleruser_orders = Order.query.filter_by(reseller_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in reselleruser (current_user)
         return render_template('orders.html', orders = reselleruser_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
 
+    if current_user == Admin(): # This line's purpose is to check if the current user is an admin
+        all_orders = Order.query.all() # This line's purpose is to get the list of all orders
+        return render_template('orders.html', orders = all_orders) # This line's purpose is to render the orders page with the list of all orders
+    elif current_user == Reseller(): # This line's purpose is to check if the current user is a reseller
+         reselleruser_orders = Order.query.filter_by(reseller_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in reselleruser (current_user)
+         return render_template('orders.html', orders = reselleruser_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
+    else:
+         return redirect(url_for('index'))
+    
 
-#### WORK IN PROGRESS #### 
-### OPEN FOR CHANGE ###   
+
+# Done  
 @app.route('/orders/create', methods=['GET','POST']) # This line's purpose is to create a new route for the create order page
 @login_required
 # Feature: Resellers must be able to place new orders through the platform.
@@ -163,6 +173,12 @@ def orders_create():
 @login_required
 def orders_update_status(order_number):
     # Admin users must be able to change the status of any order.
+    if current_user == Admin():
+        order = Order.query.filter_by(number = order_number)
+        OrderForm == order.status 
+        # order.status = on
+        # updates.append({'status' : order.status})
+
     # This function is used to change the status of an order 
     # ONLY ADMINS CAN UPDATE THE STATUS OF AN ORDER
     # if the current user is not an admin, redirect to the orders page
