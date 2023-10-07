@@ -1,4 +1,4 @@
-
+<!-- This is a seperate html page that will be displayed only for Admin Users-->
 {% extends 'base.html' %}
 {% block main %}
     <p>{{ current_user.id }}'s List of Resellers' Orders</p> <!-- The purpose of this line is to show the user's name and the current list of orders -->
@@ -8,7 +8,7 @@
             <th>Creation Date</th>
             <th>Items</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Action</th> <!-- The purpose of this line is to show the action button -->
         </tr>
         {% for order in orders %}
             {% if loop.index % 2 == 0 %}
@@ -20,12 +20,12 @@
                     <td>{{ order.creation_date }}</td>  <!-- The purpose of this line is to show the order creation date -->
                     <td>{{ order.items }}</td> <!-- The purpose of this line is to show the order's items-->
                     <td>{{ order.status }}</td> <!-- The purpose of this line is to show the status of the order -->
-                    <td><button type="button" class="button" onclick=confirmed_action("{{ url_for('orders_update_status', order_number=order.number) }}")>ChangeStatus</button></td>
+                    <td><button type="button" class="button" onclick=confirmed_action("{{ url_for('orders_change_status', order_number=order.number) }}")>Change Status</button></td>
                 </tr>
         {% endfor %}
     </table>
     <p />
-    <button type="button" class="button" onclick="simple_action('{{ url_for('users_signout') }}')">Sign Out</button>
+    <button type="button" class="button" onclick="simple_action('{{ url_for('users_signout') }}')">Sign Out</button>&nbsp;&nbsp;<button type="button" class="button" onclick="simple_action('{{ url_for('catalog_update') }}')">Update Product Catalog</button>
 </div>
 <script type="text/javascript">
     function simple_action(target) {

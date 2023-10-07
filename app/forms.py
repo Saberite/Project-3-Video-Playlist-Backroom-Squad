@@ -7,7 +7,7 @@ Description: Project 01 - Forms for Windoors Web App
 '''
 
 from flask_wtf import FlaskForm, Form
-from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, IntegerField
+from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, IntegerField, BooleanField
 from wtforms.validators import DataRequired
 
 class SignUpForm(FlaskForm):
@@ -51,4 +51,14 @@ class OrderCreateForm(FlaskForm):
     creation_date = DateField('Creation Date')  
     status = StringField('Status')
     products = FieldList(FormField(ItemForm)) 
+    submit = SubmitField('Confirm')
+
+#Adding UpdateForm. Should be editing product information. Added by Bryan T 10/5/23
+#Creating a class for UpdatingOrder. Should be passing the same information as Class Product(db.Model) but open to corrections
+class UpdateOrder(FlaskForm):
+    code = StringField('Update Code #: ', validators=[DataRequired()])
+    description = StringField('Changes to description: ', validators=[DataRequired()])
+    type = StringField('type (door/window): ', validators=[DataRequired()])
+    available = BooleanField('true/false', validators=[DataRequired()])
+    price = StringField('Enter new price: ', validators=[DataRequired()])
     submit = SubmitField('Confirm')

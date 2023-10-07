@@ -7,7 +7,7 @@ Description: Project01 - Routes for the SQLAlchemy Windoors Web App
 
 from app import app, db, load_user
 from app.models import User, Reseller, Admin, Product, Order, Item
-from app.forms import SignInForm, OrderForm, ItemForm, ResellerSignUpForm, AdminSignUpForm, OrderCreateForm
+from app.forms import SignInForm, OrderForm, ItemForm, ResellerSignUpForm, AdminSignUpForm, OrderCreateForm, UpdateOrder
 from flask import render_template, redirect, url_for, request
 from flask_login import login_required, login_user, logout_user, current_user
 import bcrypt
@@ -171,7 +171,7 @@ def orders_create():
 #### WORK IN PROGRESS ####
 @app.route('/orders/update_status/<string:order_number>', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
 @login_required
-def orders_update_status(order_number):
+def orders_change_status(order_number):
     # Admin users must be able to change the status of any order.
     if current_user == Admin():
         order = Order.query.filter_by(number = order_number)
@@ -183,22 +183,16 @@ def orders_update_status(order_number):
     # ONLY ADMINS CAN UPDATE THE STATUS OF AN ORDER
     # if the current user is not an admin, redirect to the orders page
 
-    pass
-
+    return render_template('change_status_order.html')
     
 ### THIS IS OPTIONAL, DON'T COMPLETE BEFORE OTHER ROUTES ARE DONE ###  
   
-# @app.route('/catalog/<id>/update', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
-# @login_required
-# def catalog_update(id):
-#         return render_template('orders_update.html', form=form)
-
-# # This is a helper method to check if the current user is an admin
-# # Made by Bryan Thao
-# def is_admin():
-#     # This function is used to check if the current user is an admin
-#     admin_usernames = ['tmota']  # This line's purpose is to set the admin username
-#     return current_user.id in admin_usernames # This line's purpose is to check if the current user is an admin
+@app.route('/catalog/<id>/update', methods=['GET','POST']) 
+@login_required
+def catalog_update():
+    # The purpose of this function is to update the product catalog 
+    form = UpdateOrder()
+    return render_template('update_product_catalog.html', form = form)
 
 # This is a helper method to generate the next order number
 def generate_order_number(): 

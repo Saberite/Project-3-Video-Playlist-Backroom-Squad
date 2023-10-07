@@ -8,7 +8,6 @@
             <th>Creation Date</th>
             <th>Items</th>
             <th>Status</th>
-            <th>Action</th>
         </tr>
         {% for order in orders %}
             {% if loop.index % 2 == 0 %}
@@ -20,7 +19,6 @@
                     <td>{{ order.creation_date }}</td>  <!-- The purpose of this line is to show the order creation date -->
                     <td>{{ order.items }}</td> <!-- The purpose of this line is to show the order's items-->
                     <td>{{ order.status }}</td> <!-- The purpose of this line is to show the status of the order -->
-                    <td><button type="button" class="button" onclick=confirmed_action("{{ url_for('orders_update_status', order_number=order.number) }}")>ChangeStatus</button></td>
                 </tr>
         {% endfor %}
     </table>
