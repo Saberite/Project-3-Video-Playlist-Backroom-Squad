@@ -1,13 +1,12 @@
 '''
 CS3250 - Software Development Methods and Tools - Fall 2023
 Instructor: Thyago Mota
-Student: Joseph Tewolde
 Group Name: Backroom Gang
 Description: Project 01 - Forms for Windoors Web App
 '''
 
 from flask_wtf import FlaskForm, Form
-from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, IntegerField, BooleanField
+from wtforms import StringField, PasswordField, DateField, SubmitField, validators, FormField, FieldList, IntegerField, BooleanField, SelectField
 from wtforms.validators import DataRequired
 
 class SignUpForm(FlaskForm):
@@ -27,7 +26,6 @@ class ResellerSignUpForm(SignUpForm):
 class AdminSignUpForm(SignUpForm):
     name = StringField('Name', validators=[DataRequired()])
     title = StringField('Title', validators=[DataRequired()])
-
 
 class SignInForm(FlaskForm):
     id = StringField('Id', validators=[DataRequired()])
@@ -61,4 +59,9 @@ class UpdateOrder(FlaskForm):
     type = StringField('type (door/window): ', validators=[DataRequired()])
     available = BooleanField('true/false', validators=[DataRequired()])
     price = StringField('Enter new price: ', validators=[DataRequired()])
+    submit = SubmitField('Confirm')
+
+# This form is for the admin to change the status of an order
+class ChangeStatusForm(FlaskForm):
+    status = SelectField('Status', choices=[('Pending', 'Pending'), ('Shipped', 'Shipped'), ('Delivered', 'Delivered')])
     submit = SubmitField('Confirm')

@@ -20,12 +20,12 @@
                     <td>{{ order.creation_date }}</td>  <!-- The purpose of this line is to show the order creation date -->
                     <td>{{ order.items }}</td> <!-- The purpose of this line is to show the order's items-->
                     <td>{{ order.status }}</td> <!-- The purpose of this line is to show the status of the order -->
-                    <td><button type="button" class="button" onclick=confirmed_action("{{ url_for('orders_change_status', order_number=order.number) }}")>Change Status</button></td>
+                    <td><button type="button" class="button" onclick=simple_action("{{ url_for('orders_change_status', order_number=order.number) }}")>Change Status</button></td>
                 </tr>
         {% endfor %}
     </table>
     <p />
-    <button type="button" class="button" onclick="simple_action('{{ url_for('users_signout') }}')">Sign Out</button>&nbsp;&nbsp;<button type="button" class="button" onclick="simple_action('{{ url_for('catalog_update') }}')">Update Product Catalog</button>
+    <button type="button" class="button" onclick="simple_action('{{ url_for('users_signout') }}')">Sign Out</button> <!-- The purpose of this line is to show the sign out button/TRY TO ADD UPDATE PRODUCT CATALOG -->
 </div>
 <script type="text/javascript">
     function simple_action(target) {

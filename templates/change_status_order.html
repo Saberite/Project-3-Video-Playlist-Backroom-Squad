@@ -1,1 +1,9 @@
-This will be a form where only Admins will change the status of the order. The form will be pre-populated with the current status of the order. The form will be submitted to the update_status_order view.
+{% extends 'base.html' %}
+{% block main %}
+        <h1>Change Order Status</h1>
+        <form action="" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <p>{{ form.status.label }} <br> {{ form.status(size=15) }}</p>
+            <p>{{ form.submit() }}</p>
+            </form>
+{% endblock %}

@@ -7,7 +7,7 @@ Description: Project01 - Routes for the SQLAlchemy Windoors Web App
 
 from app import app, db, load_user
 from app.models import User, Reseller, Admin, Product, Order, Item
-from app.forms import SignInForm, OrderForm, ItemForm, ResellerSignUpForm, AdminSignUpForm, OrderCreateForm, UpdateOrder
+from app.forms import SignInForm, OrderForm, ItemForm, ResellerSignUpForm, AdminSignUpForm, OrderCreateForm, UpdateOrder, ChangeStatusForm
 from flask import render_template, redirect, url_for, request
 from flask_login import login_required, login_user, logout_user, current_user
 import bcrypt
@@ -23,6 +23,7 @@ def index():
 # Done
 @app.route('/users/signin', methods=['GET', 'POST'])
 def users_signin():
+    """ This function is used to sign in a user into the database"""
     #This purpose of this function is to sign in the user by checking if the user exists and if the password is correct 
     form = SignInForm() # This line's purpose is to create a new SignInForm object
     if form.validate_on_submit(): # This line's purpose is to check if the form has been submitted
@@ -35,6 +36,7 @@ def users_signin():
 # Done
 @app.route('/register_reseller', methods=['GET', 'POST'])
 def register_reseller():
+    """ This function is used to register a new reseller user into the database"""
     form = ResellerSignUpForm()
     if form.validate_on_submit():
         existing_user = Reseller.query.filter_by(id=form.id.data).first() 
@@ -57,10 +59,10 @@ def register_reseller():
         return redirect(url_for('users_signin')) # This line's purpose is to redirect the user to the sign in page
     return render_template('reseller_signup.html', form=form)
 
-    
 # Done
 @app.route('/register_admin', methods=['GET', 'POST'])
 def register_admin():
+    """ This function is used to register a new admin user into the database"""
     form = AdminSignUpForm()
     if form.validate_on_submit():
         existing_user = Admin.query.filter_by(id=form.id.data).first() 
@@ -93,12 +95,10 @@ def users_signout():
 
 @app.route('/orders')
 @login_required
-def orders(): # COMPLETE
-    ## FIND A WAY TO FILTER ORDERS BY USER ID FOR THE RESELLER USER - DONE
-    ## FOR THE ADMIN USER, SHOW ALL ORDERS FOR ALL USERS
-    
+def orders(): # COMPLETE  
     # Resellers must be able to track their own orders
     # Admin users must be able to track all orders
+    
     if current_user.role == "admin" : # This line's purpose is to check if the current user is an admin
         all_orders = Order.query.all() # This line's purpose is to get the list of all orders
         return render_template('admin_orders.html', orders = all_orders) # This line's purpose is to render the orders page with the list of all orders
@@ -115,8 +115,6 @@ def orders(): # COMPLETE
     else:
          return redirect(url_for('index'))
     
-
-
 # Done  
 @app.route('/orders/create', methods=['GET','POST']) # This line's purpose is to create a new route for the create order page
 @login_required
@@ -124,6 +122,8 @@ def orders(): # COMPLETE
 # RESELLERS CAN ONLY CREATE ORDERS FOR THEMSELVES
 # if the current user is not a reseller, redirect to the orders page
 def orders_create():
+    """ This function is used to create a new order into the database and add it to the list of orders
+    where the current user is the reseller"""
     if current_user.role == "reseller": # This line's purpose is to check if the current user is a reseller
         form = OrderCreateForm() # This line's purpose is to create a new OrderForm object
 
@@ -138,6 +138,10 @@ def orders_create():
             creation_date = generate_create_date() # This line's purpose is to generate the creation date
             product_entries = form.products.data # This line's purpose is to get the list of products from the form
             items = [] # This line's purpose is to create a new list of items
+            items_product_codes = [] # This line's purpose is to create a new list of items product codes
+            items_quantity = [] # This line's purpose is to create a new list of items quantity
+
+            default_status = "New" # This line's purpose is to set the default status to "New"
 
             for product_entry in product_entries:
                 product_code = product_entry['product_code'] # This line's purpose is to get the product code from the product entry
@@ -145,19 +149,19 @@ def orders_create():
                 specs = product_entry['specs'] # This line's purpose is to get the specs from the product entry
                 print(f"Processing product: {product_code}, Quantity: {quantity}, Specs: {specs}")
 
-            product = Product.query.filter_by(code=product_code).first() # This line's purpose is to get the product from the database
-
-            if product and quantity > 0:
-                # Create a new Item object for this product
-                new_item = Item(product_code=product_code, quantity=quantity, specs=specs, order_id=new_Order.id) # This line's purpose is to create a new ite
-                items.append(new_item) # This line's purpose is to append the new item to the new order
-                print(f"Item created and appended to items list: {new_item}") # This line's purpose is to print the new item- PLACEHOLDER, REMOVE WHEN DONE
-
-            print(f"Total items for this order: {len(items)}") # This line's purpose is to print the total number of items for this order - PLACE 
-
-            default_status = "New" # This line's purpose is to set the default status to "New"
-
+                if product_entry['quantity'] > 0: # This line's purpose is to check if the quantity is less than or equal to 0
+                    # Create a new Item object for this product
+                    new_item = Item(product_code=product_code, quantity=quantity, specs=specs) # This line's purpose is to create a new item
+                    
+                    items.append(new_item) # This line's purpose is to append the new item to the new order
+                    items_product_codes.append(product_code) # This line's purpose is to append the product code to the list of items product codes
+                    items_quantity.append(quantity) # This line's purpose is to append the quantity to the list of items quantity
+                    print(f"Item created and appended to items list: {new_item}") # This line's purpose is to print the new item- PLACEHOLDER, REMOVE WHEN DONE
+            
+            print(f"Total items for this order: {len(items)}") # This line's purpose is to print the total number of items for this order- PLACEHOLDER, REMOVE WHEN DONE
             new_Order = Order(number=order_number, creation_date=creation_date, items=items, status=default_status, reseller_id=current_user.id) # This line's purpose is to create a new order
+            new_Order.items = items # This line's purpose is to set the items of the new order to the list of items
+            print(items_product_codes + items_quantity) # This line's purpose is to print the list of items product codes- PLACEHOLDER, REMOVE WHEN DONE
 
             db.session.add(new_Order) # This line's purpose is to add the new order to the database
             db.session.commit() # This line's purpose is to commit the new order to the database
@@ -168,34 +172,38 @@ def orders_create():
     else: # This line's purpose is to check if the current user is not a reseller
         return redirect(url_for('orders')) # This line's purpose is to redirect the user to the list of orders page
 
-#### WORK IN PROGRESS ####
+#### COMPLETE ####
 @app.route('/orders/update_status/<string:order_number>', methods=['GET','POST']) # This line's purpose is to create a new route for the update order page
 @login_required
 def orders_change_status(order_number):
+    """ This function is used to update the status of an order into the database, only admins can update the status of an order"""
     # Admin users must be able to change the status of any order.
-    if current_user == Admin():
-        order = Order.query.filter_by(number = order_number)
-        OrderForm == order.status 
-        # order.status = on
-        # updates.append({'status' : order.status})
-
+    
     # This function is used to change the status of an order 
     # ONLY ADMINS CAN UPDATE THE STATUS OF AN ORDER
     # if the current user is not an admin, redirect to the orders page
 
-    return render_template('change_status_order.html')
+    form =  ChangeStatusForm() # This line's purpose is to create a new OrderForm object
+    order = Order.query.filter_by(number=order_number).first() # This line's purpose is to get the order from the database
+    if order and form.validate_on_submit(): # This line's purpose is to check if the order exists and if the form has been submitted
+        order.status = form.status.data # This line's purpose is to update the status of the order
+        db.session.commit() # This line's purpose is to commit the updated order to the database
+        return redirect(url_for('orders')) # This line's purpose is to redirect the user to the list of orders page
+    else:
+        return render_template('change_status_order.html', form = form, order = order) # This line's purpose is to render the update order page
     
 ### THIS IS OPTIONAL, DON'T COMPLETE BEFORE OTHER ROUTES ARE DONE ###  
-  
+
 @app.route('/catalog/<id>/update', methods=['GET','POST']) 
 @login_required
-def catalog_update():
+def catalog_update(id):
     # The purpose of this function is to update the product catalog 
     form = UpdateOrder()
     return render_template('update_product_catalog.html', form = form)
 
 # This is a helper method to generate the next order number
 def generate_order_number(): 
+    """ This function is used to generate the order number for a new order"""
     # Get the count of existing orders
     existing_orders_count = Order.query.count()
     # Generate the next order number
@@ -204,6 +212,7 @@ def generate_order_number():
 
 # This is a helper method to generate the creation date when a new order is created
 def generate_create_date():
+    """ This function is used to generate the creation date for a new order"""
     # This function is used to generate the creation date
     return datetime.now().strftime("%Y-%m-%d") # This line's purpose is to return the creation date
     

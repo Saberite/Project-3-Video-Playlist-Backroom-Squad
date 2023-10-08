@@ -10,6 +10,10 @@ from flask import Flask
 app = Flask("Authentication Web App")
 app.config['SECRET_KEY']  = 'you-will-never-guess'
 
+# initial admin user for Professor Mota
+app.config['Initial_Admin'] = [
+    {'id': 'tmota', 'email': 'tmota@msudenver.edu', 'passwd': '1', 'creation_date': '2021-09-01', 'role': 'admin', 'name': 'Thyago Mota', 'title': 'Professor'}
+]
 
 app.config['INITIAL_PRODUCTS'] = [
     {'product_code': 'door-001', 'quantity': 0, 'specs': ''},  # This is the initial product list

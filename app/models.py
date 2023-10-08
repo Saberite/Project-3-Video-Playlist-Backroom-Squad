@@ -64,7 +64,7 @@ class Order(db.Model):
 class Item(db.Model):
     __tablename__ = "items"
 
-    id = db.Column(db.String, primary_key=True) # item id
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True) # item id
     order_number = db.Column(db.String, db.ForeignKey("orders.number")) # order number
     sequential_number = db.Column(db.Integer) # item sequential number
     product_code = db.Column(db.String, db.ForeignKey("products.code")) # product code
