@@ -29,8 +29,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 db.init_app(app)
 
 from app import models
+from app import tMotaAdmin
 with app.app_context(): 
     db.create_all()
+    tMotaAdmin.create_admin() # create initial admin user
 
 # login manager
 from flask_login import LoginManager

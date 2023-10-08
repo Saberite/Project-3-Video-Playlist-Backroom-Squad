@@ -5,7 +5,6 @@
         <tr>
             <th>Order#</th>
             <th>Creation Date</th>
-            <th>Items</th>
             <th>Status</th>
         </tr>
         {% for order in orders %}
@@ -16,13 +15,6 @@
             {% endif %}
                     <td>{{ order.number }}</td> <!-- The purpose of this line is to show the order number -->
                     <td>{{ order.creation_date }}</td>  <!-- The purpose of this line is to show the order creation date -->
-                    <td>
-                        <ul>
-                            {% for item_code, item_quantity in zip(items_product_codes[loop.index0], items_quantity[loop.index0]) %}
-                                <li>{{ item_code }} (Quantity: {{ item_quantity }})</li>
-                            {% endfor %}
-                        </ul>
-                      </td>
                     <td>{{ order.status }}</td> <!-- The purpose of this line is to show the status of the order -->
                 </tr>
         {% endfor %}

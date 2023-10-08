@@ -8,7 +8,7 @@ Description: Project01 - Routes for the SQLAlchemy Windoors Web App
 from app import app, db, load_user
 from app.models import User, Reseller, Admin, Product, Order, Item
 from app.forms import SignInForm, OrderForm, ItemForm, ResellerSignUpForm, AdminSignUpForm, OrderCreateForm, UpdateOrder, ChangeStatusForm
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, session
 from flask_login import login_required, login_user, logout_user, current_user
 import bcrypt
 from datetime import datetime
@@ -98,22 +98,13 @@ def users_signout():
 def orders(): # COMPLETE  
     # Resellers must be able to track their own orders
     # Admin users must be able to track all orders
-    
+
     if current_user.role == "admin" : # This line's purpose is to check if the current user is an admin
         all_orders = Order.query.all() # This line's purpose is to get the list of all orders
         return render_template('admin_orders.html', orders = all_orders) # This line's purpose is to render the orders page with the list of all orders
     else: # This line's purpose is to check if the current user is a reseller
         reselleruser_orders = Order.query.filter_by(reseller_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in reselleruser (current_user)
-        return render_template('orders.html', orders = reselleruser_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
-
-    if current_user == Admin(): # This line's purpose is to check if the current user is an admin
-        all_orders = Order.query.all() # This line's purpose is to get the list of all orders
-        return render_template('orders.html', orders = all_orders) # This line's purpose is to render the orders page with the list of all orders
-    elif current_user == Reseller(): # This line's purpose is to check if the current user is a reseller
-         reselleruser_orders = Order.query.filter_by(reseller_id=current_user.id).all() # This line's purpose is to get the list of orders from the signed-in reselleruser (current_user)
-         return render_template('orders.html', orders = reselleruser_orders) # This line's purpose is to render the orders page with the list of orders from the signed-in user (current_user)
-    else:
-         return redirect(url_for('index'))
+        return render_template('orders.html', orders=reselleruser_orders)
     
 # Done  
 @app.route('/orders/create', methods=['GET','POST']) # This line's purpose is to create a new route for the create order page
@@ -163,6 +154,9 @@ def orders_create():
             new_Order.items = items # This line's purpose is to set the items of the new order to the list of items
             print(items_product_codes + items_quantity) # This line's purpose is to print the list of items product codes- PLACEHOLDER, REMOVE WHEN DONE
 
+            session['items_product_codes'] = items_product_codes # This line's purpose is to set the items product codes to the session
+            session['items_quantity'] = items_quantity # This line's purpose is to set the items quantity to the session
+            
             db.session.add(new_Order) # This line's purpose is to add the new order to the database
             db.session.commit() # This line's purpose is to commit the new order to the database
 

@@ -6,7 +6,6 @@
         <tr>
             <th>Order#</th>
             <th>Creation Date</th>
-            <th>Items</th>
             <th>Status</th>
             <th>Action</th> <!-- The purpose of this line is to show the action button -->
         </tr>
@@ -18,7 +17,6 @@
             {% endif %}
                     <td>{{ order.number }}</td> <!-- The purpose of this line is to show the order number -->
                     <td>{{ order.creation_date }}</td>  <!-- The purpose of this line is to show the order creation date -->
-                    <td>{{ order.items }}</td> <!-- The purpose of this line is to show the order's items-->
                     <td>{{ order.status }}</td> <!-- The purpose of this line is to show the status of the order -->
                     <td><button type="button" class="button" onclick=simple_action("{{ url_for('orders_change_status', order_number=order.number) }}")>Change Status</button></td>
                 </tr>
