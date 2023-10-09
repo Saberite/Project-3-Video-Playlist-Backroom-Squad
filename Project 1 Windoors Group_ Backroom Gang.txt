@@ -1,0 +1,174 @@
+﻿Project 1: Windoors
+ 
+Planned Schedule:
+Phase
+	Task
+	Start
+	End
+	Duration
+	Deliverable
+	Modeling Pt. 1
+	Agreement of plan for project
+	9/29/2023
+	9/30/2023
+	Undetermined
+	Use Case Diagram
+	Modeling Pt.2
+	Data Model using UML
+	9/30/2023
+	10/03/2023
+	Undetermined
+	Class Diagram
+	Construction
+	Coding
+	10/3/2023
+	10/8/23
+	5-7 Days
+	Code
+ 
+	Construction
+	Testing
+	10/8/2023
+	10/8/2023
+	1 Day
+	Test Report
+ 
+	Deployment
+	Commit and push
+	--
+	10/08/2023
+	Till 10/08/2023
+	Final Commit and Push
+	 
+
+
+
+
+Team Roles:
+Names
+	Roles
+	Kentaro Maineri
+ 
+	Developer, Tester, Programmer
+	Sayizana Worku
+ 
+	Developer, Tester, Programmer, Designer, 
+	Bryan Thao
+ 
+	Developer, Tester, Editor, Designer, Manager
+	Joseph Tewolde
+ 
+	Tester, Designer, Main Developer
+	 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modeling Phase:
+PlantUML Diagram: 
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Class Diagram:
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+Implementation Phase:
+Testing Log:
+
+
+Report/Functionality Tested
+	Result
+	Date
+	SQLAlchemy data model testing
+	Failed - Inheritance relationship couldn’t be determined
+	9/29/23
+	SQLAlchemy data model testing
+	Failed - mismatch between column names in the model and column names in the database table
+	9/29/23
+	SQLAlchemy data model testing
+	Failed - IntegrityError: NOT NULL constraint failed: users.email
+	9/30/23
+	SQLAlchemy data model testing
+
+
+	Failed - IntegrityError: NOT NULL constraint failed: items.orderNumber
+	9/30/23
+	SQLAlchemy data model testing
+	Passed - All tests of printing out different users, orders, items, and products worked without any errors
+	9/30/23
+	Baseline Sign in/ Sign out testing
+	Passed - Various version from team completed with comparisons on the way
+	10/01/23
+	Baseline order list/table test 
+	Passed - Working table, but will need some edits to see how much information we would like to add
+	10/01/2023
+	Order Change Status command test
+	Failed - Code failed to run
+	10/06/2023
+	User Authentication
+	Passed - Both Reseller and Admins are correctly working
+	10/06/2023
+	Orders filtered by Specific Users
+	Passed - Resellers will see their orders and Admins will see all orders currently made.
+	10/06/2023
+	Orders_create 
+	Passed - Orders can be created and correctly redirected back to the orders page.
+	10/06/2023
+	Route for Orders
+	Passed -  Roles for the users allows orders to be filtered
+	10/06/2023
+	Orders_update_status pt. 2
+	Failed - Error when passing product for update
+	10/07/2023
+	New Order Command
+	Passed - Can make a new order with working buttons for change quantity, width/height, and product name.
+	10/07/2023
+	Order Status Update pt.3
+	Passed - Admins now have the access to modified the status of an order between “Delivered”, “Pending”, or “Shipped”
+	10/07/2023
+	Admin User Tmota working
+	Passed - User Tmota is hard-coded as an Admin for usage. 
+	10/07/2023
+	Final Test Beta Rollout
+	Passed - Final test from Joseph shows correctly working program
+	10/08/2023
